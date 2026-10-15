@@ -1,0 +1,186 @@
+@import "tailwindcss" source(none);
+@source "../**/*.html";
+@source "../js/**/*.js";
+
+/* Brand tokens. Colors checked against WCAG 2.2 AA:
+   white on canyon 5.46:1 · ink on ember 7.43:1 · stone on mist 6.43:1 · haze on night 8.12:1
+   canyon text is fine on white (5.46) and mist (4.89) but NOT on sand (4.33) — use canyon-dark there. */
+@theme {
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-ink: #0e1421;
+  --color-night: #141c2e;
+  --color-night-2: #1c2740;
+  --color-night-line: #2c3854;
+  --color-mist: #f6f2ec;
+  --color-sand: #ece4d8;
+  --color-line: #ded6ca;
+  --color-stone: #4f5868;
+  --color-haze: #a9b4c6;
+  --color-canyon: #b8430f;
+  --color-canyon-dark: #9a370b;
+  --color-ember: #f28a3d;
+  --color-glacier: #8fc3e6;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --text-hero: clamp(2.25rem, 1.5rem + 3.4vw, 4rem);
+  --text-hero--line-height: 1.05;
+  --text-hero--letter-spacing: -0.02em;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    @apply bg-mist font-sans text-ink antialiased;
+  }
+
+  a {
+    @apply underline-offset-4;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-canyon);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-ember);
+  }
+}
+
+@layer components {
+  .wrap {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-ink;
+  }
+
+  /* Buttons — 48px minimum height for thumbs. */
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-5 py-3 text-base leading-tight font-semibold no-underline transition-colors;
+  }
+  .btn-primary {
+    @apply bg-canyon text-white hover:bg-canyon-dark;
+  }
+  .btn-outline-light {
+    @apply border-2 border-white/70 text-white hover:border-white hover:bg-white hover:text-ink;
+  }
+  .btn-outline-dark {
+    @apply border-2 border-ink text-ink hover:bg-ink hover:text-white;
+  }
+
+  /* Type */
+  /* canyon-dark, not canyon: canyon on sand is only 4.33:1. canyon-dark clears 5.69:1 on every light surface. */
+  .eyebrow {
+    @apply text-sm font-semibold tracking-widest text-canyon-dark uppercase;
+  }
+  .on-dark .eyebrow {
+    @apply text-ember;
+  }
+  .h2 {
+    @apply text-3xl font-extrabold tracking-tight text-balance md:text-4xl;
+  }
+  .lede {
+    @apply text-lg text-stone md:text-xl;
+  }
+  .on-dark .lede {
+    @apply text-haze;
+  }
+  .section {
+    @apply py-16 md:py-24;
+  }
+
+  .card {
+    @apply rounded-2xl border border-line bg-white p-6;
+  }
+
+  /* Makes a whole .card (position: relative) clickable through its heading link. */
+  .stretched-link::after {
+    content: "";
+    @apply absolute inset-0 rounded-2xl;
+  }
+
+  /* Header + nav. Mobile: panel under the header, toggled by js/main.js. md+: inline. */
+  .nav-toggle {
+    @apply inline-flex min-h-12 items-center gap-2 rounded-lg border border-night-line px-4 font-semibold text-white;
+  }
+  .site-nav {
+    @apply absolute inset-x-0 top-full hidden border-t border-night-line bg-night md:static md:block md:border-0 md:bg-transparent;
+  }
+  .site-nav[data-open] {
+    @apply block;
+  }
+  .site-nav ul {
+    @apply mx-auto max-w-6xl px-4 py-2 sm:px-6 md:flex md:max-w-none md:items-center md:gap-6 md:px-0 md:py-0;
+  }
+  .site-nav a {
+    @apply block border-b border-night-line py-4 text-lg font-semibold text-white no-underline hover:text-ember md:border-0 md:py-2 md:text-base;
+  }
+  .site-nav li:last-child a {
+    @apply border-0;
+  }
+  .site-nav a[aria-current="page"] {
+    @apply text-ember;
+  }
+
+  .hero-bg {
+    background:
+      radial-gradient(110% 70% at 90% 0%, color-mix(in oklab, var(--color-canyon) 38%, transparent), transparent 62%),
+      linear-gradient(180deg, var(--color-night) 0%, var(--color-night-2) 100%);
+  }
+
+  /* Checklists on service pages: a canyon check drawn with a CSS mask, no extra markup. */
+  .check-list {
+    @apply grid gap-4;
+  }
+  .check-list li {
+    @apply relative pl-9;
+  }
+  .check-list li::before {
+    content: "";
+    @apply absolute top-0.5 left-0 size-6 rounded-full bg-canyon;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24Zm-1.6 17.2-5-5 1.7-1.7 3.3 3.3 7-7 1.7 1.7-8.7 8.7Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .breadcrumbs ol {
+    @apply flex flex-wrap items-center gap-2 text-sm text-haze;
+  }
+  .breadcrumbs li + li::before {
+    content: "/";
+    @apply mr-2 text-night-line;
+  }
+  .breadcrumbs a {
+    @apply text-haze hover:text-white;
+  }
+
+  /* Forms */
+  .label {
+    @apply text-sm font-semibold text-ink;
+  }
+  .input {
+    @apply min-h-12 w-full rounded-lg border border-stone bg-white px-3.5 py-2.5 text-base text-ink placeholder:text-stone;
+  }
+  .input:focus-visible {
+    @apply border-canyon;
+  }
+
+  /* Mobile call bar — fixed to the thumb zone below md. Body gets matching bottom padding. */
+  .mobile-cta {
+    @apply fixed inset-x-0 bottom-0 z-40 flex gap-3 border-t border-night-line bg-night px-3 pt-3 md:hidden;
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+}

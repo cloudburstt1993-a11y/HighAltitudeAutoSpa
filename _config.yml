@@ -1,0 +1,6 @@
+# GitHub Pages runs Jekyll on this repo. Nothing here uses Jekyll templating; this file
+# only keeps working files off the public site (Pages would otherwise publish .md as pages).
+exclude:
+  - README.md
+  - SETUP-TODO.md
+  - src/

@@ -1,0 +1,13 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+
+# Local tooling output
+lighthouse-*.html
+lighthouse-*.json
+linkinator-*.txt
+
+# Local preview config
+.claude/
