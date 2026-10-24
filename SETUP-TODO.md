@@ -36,9 +36,11 @@ Instagram, and the business card. Check it once:
 
 ## 2. Accounts
 
-- [ ] **Formspree.** Create a form, set the notification email, and put the ID
-  in `SITE["formspree_id"]` in `src/build.py`. Until then the form posts
-  nowhere; the phone number is the real CTA.
+- [ ] **Quote form.** Set up the lead automation (`automation/HAAS Automation
+  Setup.md`, 15 minutes on Ryan's Google account) and paste the web app URL
+  into `FORM_ENDPOINT` in `js/main.js`. Formspree is the fallback if he'd
+  rather not: put the ID in `SITE["formspree_id"]`. Until one is set, the form
+  shows the "call us" notice.
 - [ ] **GA4.** Put the Measurement ID in `js/main.js` (`GA4_ID`). Mark
   `generate_lead` and `click_to_call` as key events once they fire.
 - [ ] **Google Business Profile.** It has **no website** on it right now. Add

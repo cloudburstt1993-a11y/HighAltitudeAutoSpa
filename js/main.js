@@ -72,27 +72,38 @@ document.querySelectorAll('[data-shade-picker]').forEach((picker) => {
   });
 });
 
-// Quote form → Formspree, with an in-page confirmation instead of a trip to formspree.io.
-// Without JS the form still posts normally and Formspree shows its own thank-you page.
+// Quote form. Posts to the HAAS lead automation (Google Apps Script web app) when FORM_ENDPOINT
+// is set; otherwise to Formspree via the form's action; otherwise shows the "call us" notice.
+// See automation/HAAS Automation Setup.md.
+const FORM_ENDPOINT = '';
+
 const form = document.querySelector('[data-quote-form]');
 if (form) {
   const success = document.querySelector('[data-form-success]');
   const error = form.querySelector('[data-form-error]');
   const button = form.querySelector('[type="submit"]');
   const label = button.textContent;
+  const connected = FORM_ENDPOINT || !/\[FORMSPREE_ID\]/.test(form.action);
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     error.hidden = true;
+    if (!connected) { error.hidden = false; return; }
     button.disabled = true;
     button.textContent = 'Sending…';
     try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { Accept: 'application/json' },
-      });
-      if (!res.ok) throw new Error('Formspree responded ' + res.status);
+      let res;
+      if (FORM_ENDPOINT) {
+        // Apps Script accepts a text/plain body without a CORS preflight.
+        const data = Object.fromEntries(new FormData(form));
+        data.source = 'Website';
+        res = await fetch(FORM_ENDPOINT, { method: 'POST', body: JSON.stringify(data), headers: { 'Content-Type': 'text/plain' } });
+        const out = await res.json().catch(() => ({ ok: res.ok }));
+        if (!out.ok) throw new Error('Lead endpoint rejected the request');
+      } else {
+        res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error('Formspree responded ' + res.status);
+      }
       track('generate_lead', { form_name: 'quote', service: form.elements.service.value });
       form.hidden = true;
       success.hidden = false;
