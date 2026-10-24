@@ -1,46 +1,47 @@
 # High Altitude Auto Spa
 
-Website for High Altitude Auto Spa, a car detailing shop in Grand Junction, CO.
-Hand-written HTML, Tailwind v4 (standalone CLI), and one vanilla script. No
-framework, no `package.json`, and no build step on the server: GitHub Pages
-serves the committed files as-is.
+Website for High Altitude Auto Spa (HAAS), Ryan Clark's window tinting and
+detailing shop at 2912 Hill Ave, Grand Junction, CO. Hand-written HTML generated
+from one Python file, Tailwind v4 (CLI), and one vanilla script. No framework
+and no build step on the server: GitHub Pages serves the committed files as-is.
 
-**Before launch, work through [SETUP-TODO.md](SETUP-TODO.md).** Business
-details are still `[PLACEHOLDERS]`.
+**Before launch, work through [SETUP-TODO.md](SETUP-TODO.md).** The business
+details are real now; what's left is the form endpoint, analytics, and the domain.
 
 ## Structure
 
 ```
+src/build.py               business details (SITE) + the page shell; run it to regenerate every page
+src/content.py             the copy for each page
+src/input.css              @theme tokens + @layer components (edit this, not css/style.css)
 index.html                 home
-services/*.html            interior, exterior, paint correction, ceramic coating
+services/*.html            window tinting, interior, exterior, ceramic coating, paint correction
 about.html  contact.html  privacy.html  404.html
 css/style.css              compiled Tailwind, committed
-src/input.css              @theme tokens + @layer components (edit this, not style.css)
-js/main.js                 mobile menu, Formspree submit, GA4 events
-assets/img/                favicon, touch icon, share image
+js/main.js                 mobile menu, tint shade picker, Formspree submit, GA4 events
+assets/img/                logo marks, icons, share image, photo sets (AVIF/WebP/JPEG)
+assets/fonts/              Barlow + Barlow Condensed, self-hosted
 ```
 
 ## Working on it
 
-Rebuild the CSS after changing any classes or `src/input.css`, and commit the
-output:
+Change the phone, hours, or address in **one place**, `SITE` in `src/build.py`,
+then regenerate the pages and rebuild the CSS:
 
 ```bash
-tailwindcss -i ./src/input.css -o ./css/style.css --minify
+python3 src/build.py
+npx @tailwindcss/cli -i ./src/input.css -o ./css/style.css --minify
 ```
 
-Preview locally:
+Commit the generated HTML and CSS. Preview locally with `python3 -m http.server`.
 
-```bash
-serve .
-```
-
-- **The header, footer, CTA band, and mobile call bar are duplicated on every
-  page** on purpose, since there's no template engine. To change one, grep
-  for it and update all nine pages. A stale nav on one page is a bug.
-- Colors, fonts, and the hero type size are tokens in `src/input.css`. Add a
-  token rather than a hex value or a one-off size in the markup.
-- `.eyebrow` uses `canyon-dark`. Plain `canyon` text fails contrast on the
-  `sand` background.
-- Phone links carry `data-call="<location>"`, which is reported to GA4 as
-  `click_to_call` → `link_location`. Give new phone links a unique location.
+- **Don't hand-edit the HTML pages.** They're overwritten by `build.py`. Copy
+  lives in `src/content.py`; the header, footer, CTA band, and mobile call bar
+  live once in `build.py`.
+- Colors and fonts are tokens in `src/input.css`. `black` is the logo's own
+  #222. `orange` (from the business card) is for the call button only.
+- Photos: drop originals in a folder and adapt `process.py` from the build
+  notes (crops into `assets/img/<name>-<w>.{avif,webp,jpg}`), then reference
+  them with `picture(...)` in `content.py`.
+- Phone links carry `data-call="<location>"`, reported to GA4 as
+  `click_to_call` → `link_location`. The shade picker reports `select_shade`.

@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
-Sitemap: [SITE_URL]/sitemap.xml
+Sitemap: https://cloudburstt1993-a11y.github.io/HighAltitudeAutoSpa/sitemap.xml

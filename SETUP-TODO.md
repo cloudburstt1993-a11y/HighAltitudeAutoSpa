@@ -1,204 +1,73 @@
 # Setup To-Do: High Altitude Auto Spa
 
-Everything the site needs before it can go live. The pages are built and pass
-QA. What's left is real business information, a few decisions only the
-client can make, and the account setup.
+The site now carries the real business: name, address, phone, hours, Ryan's
+name, the HAAS logo, the shop's own photos, and the Google rating. What's left
+is account setup, a few things to confirm with Ryan, and the domain.
 
-The one fact verified so far: **High Altitude Auto Spa is a car detailing
-shop in Grand Junction, CO.** Every other business detail is a `[PLACEHOLDER]`.
-Nothing was invented: no phone number, address, prices, reviews, or years in
-business.
+## 1. Confirm with Ryan (five minutes on the phone)
 
----
+Everything below was taken from the Facebook page, the Google Business Profile,
+Instagram, and the business card. Check it once:
 
-## 1. Fill in the blanks
+- [ ] **ZIP.** Google, Yelp, and MapQuest say **81504**; the Facebook page says
+  81505. The site uses 81504. Fix whichever one is wrong so the listings match.
+- [ ] **Hours.** Google says Mon–Sat 9–5, closed Sunday. Facebook hides hours
+  behind a login.
+- [ ] **Email.** The site uses ryanclark970@gmail.com (from Facebook). If he'd
+  rather use a business address, change `SITE["email"]` in `src/build.py`.
+- [ ] **Instagram handle.** It's spelled `highaltituteautospa` on Instagram and
+  Facebook (not "altitude"). The site links to it exactly as spelled. Worth
+  mentioning to him; renaming the Instagram would be a good idea.
+- [ ] **Services.** The site lists window tinting, interior, exterior, ceramic
+  coating, paint correction, plus headlight restoration, graphics/vinyl,
+  accessories, and fleet work. All come from his own posts and card. Cut any
+  he's stopped doing.
+- [ ] **Claims to verify:** "ceramic film only" (tinting page), "5+ years"
+  (his Facebook intro says "over five years"), "Nasiol Pro Club certified"
+  (certificate posted Oct 2026), "quote before we start, no add-ons".
+- [ ] **Colorado tint law wording** (home + tinting page). It says 27% on the
+  back half with 70% fronts, and a windshield visor strip. Have him confirm
+  that matches what he installs; laws change.
+- [ ] **Reviews.** Three Google reviews are quoted by first name (Victoria,
+  Aaron) or as "Google review". They're public, but ask if he'd rather use
+  different ones or none.
+- [ ] **Prices.** None shown. If he wants "from" prices, add a line per service
+  in `src/content.py`.
 
-Every blank appears in square brackets. Replacing them all in one pass
-guarantees that the business name, address, and phone (NAP) are identical on
-every page, which local SEO depends on.
+## 2. Accounts
 
-| Placeholder | What it is | Example format |
-|---|---|---|
-| `[PHONE]` | Phone number as people read it | `(970) 555-0100` |
-| `[PHONE_TEL]` | Same number for tap-to-call links | `+19705550100` |
-| `[EMAIL]` | Contact email | `hello@example.com` |
-| `[ADDRESS_STREET]` | Street address of the shop | `123 Example Ave, Unit B` |
-| `[ZIP]` | ZIP code | `81501` |
-| `[HOURS]` | Hours, as shown on the site | `Mon–Fri 8am–5pm, Sat 9am–2pm` |
-| `[HOURS_SCHEMA]` | Same hours, in Google's format | `Mo-Fr 08:00-17:00` |
-| `[MAPS_URL]` | The Google Business Profile **Share** link | `https://maps.app.goo.gl/...` |
-| `[SITE_URL]` | Live address, no trailing slash | `https://highaltitudeautospagj.com` |
-| `[FORMSPREE_ID]` | Formspree form ID (step 4) | `xpzvqkab` |
-| `[GA4_ID]` | GA4 Measurement ID (step 4) | `G-ABC123XYZ9` |
-| `[PRICE_INTERIOR]` `[PRICE_EXTERIOR]` `[PRICE_FULL]` `[PRICE_CORRECTION]` `[PRICE_CERAMIC]` | "Starting at" prices | `$149` |
-| `[ABOUT_STORY]` | 2–3 sentences in the owner's words (about.html) | Replace by hand, it's a paragraph |
+- [ ] **Formspree.** Create a form, set the notification email, and put the ID
+  in `SITE["formspree_id"]` in `src/build.py`. Until then the form posts
+  nowhere; the phone number is the real CTA.
+- [ ] **GA4.** Put the Measurement ID in `js/main.js` (`GA4_ID`). Mark
+  `generate_lead` and `click_to_call` as key events once they fire.
+- [ ] **Google Business Profile.** It has **no website** on it right now. Add
+  the site URL with `?utm_source=google&utm_medium=organic&utm_campaign=gbp`.
+  Primary category is already "Window tinting service"; add "Auto detailing"
+  and "Car detailing service" as secondary categories if they aren't.
+- [ ] **Google Search Console.** Verify, submit `/sitemap.xml`.
 
-**Use the exact phone, address, and hours from the Google Business Profile**,
-character for character, or set the profile to match these.
+## 3. Domain and go-live
 
-**Hours with more than one range:** `[HOURS_SCHEMA]` holds one range. For
-split hours, edit the `openingHours` line in `index.html` by hand:
-`"openingHours": ["Mo-Fr 08:00-17:00", "Sa 09:00-14:00"],`
+- [ ] Pick a domain. Watch the **name clash**: a different "High Altitude Auto
+  Spa" is a mobile detailer in Aurora, CO. Something with GJ in it
+  (`haasgj.com`, `highaltitudeautospagj.com`) keeps them apart in search.
+- [ ] Set `SITE["site_url"]` in `src/build.py` to the real domain (no trailing
+  slash), run `python3 src/build.py`, commit.
+- [ ] Add a `CNAME` file at the root with the domain. DNS: A records to
+  185.199.108.153 / .109 / .110 / .111 and a CNAME for `www`. Enforce HTTPS.
 
-### Replace them all at once (PowerShell, from the project folder)
+## 4. Nice-to-haves after launch
 
-Edit the values on the right, then paste the whole block:
+- More photos: a tinted car with the shade visible, an interior before/after,
+  the Nasiol certificate framed on the wall. The home gallery takes three
+  cards; swap in his best.
+- A short video from one of his reels in the hero (they get 1–4K views each).
+- Lead and review automation like the MTF / RAM packages.
 
-```powershell
-$values = [ordered]@{
-  '[PHONE_TEL]'        = '+19705550100'
-  '[PHONE]'            = '(970) 555-0100'
-  '[EMAIL]'            = 'hello@example.com'
-  '[ADDRESS_STREET]'   = '123 Example Ave'
-  '[ZIP]'              = '81501'
-  '[HOURS_SCHEMA]'     = 'Mo-Fr 08:00-17:00'
-  '[HOURS]'            = 'Mon–Fri 8am–5pm'
-  '[MAPS_URL]'         = 'https://maps.app.goo.gl/XXXX'
-  '[SITE_URL]'         = 'https://example.com'
-  '[FORMSPREE_ID]'     = 'xxxxxxxx'
-  '[GA4_ID]'           = 'G-XXXXXXXXXX'
-  '[PRICE_INTERIOR]'   = '$000'
-  '[PRICE_EXTERIOR]'   = '$000'
-  '[PRICE_FULL]'       = '$000'
-  '[PRICE_CORRECTION]' = '$000'
-  '[PRICE_CERAMIC]'    = '$000'
-}
-Get-ChildItem -Recurse -File -Include *.html,*.js,*.xml,*.txt |
-  Where-Object FullName -notmatch '\\(\.git|src)\\' |
-  ForEach-Object {
-    $text = [IO.File]::ReadAllText($_.FullName)
-    $new = $text
-    foreach ($k in $values.Keys) { $new = $new.Replace($k, $values[$k]) }
-    if ($new -ne $text) { [IO.File]::WriteAllText($_.FullName, $new); "updated $($_.FullName)" }
-  }
-```
+## QA done (Oct 24, 2026)
 
-### Check nothing is left
-
-```bash
-grep -rnoE '\[[A-Z0-9_]{3,}\]' --include='*.html' --include='*.js' --include='*.xml' --include='*.txt' .
-```
-
-No output means every blank is filled. Today it finds 17 different
-placeholders.
-
-**Not showing prices?** Delete the `From [PRICE_…]` lines instead of filling
-them: the four service cards and the "Full detail" box in `index.html`, plus
-one line near the top of each page in `services/`.
-
----
-
-## 2. Confirm with the client
-
-### The name clash (important)
-
-A **different** business called "High Altitude Auto Spa" is listed on Yelp:
-a mobile detailer in Aurora, CO (Denver metro, 303 number). Search engines can
-mix the two up. The site always pairs the name with "Grand Junction" (page
-titles, header, structured data) to keep them apart. Also:
-
-- [ ] Pick a domain that includes the location if the plain name is taken
-  (e.g. `highaltitudeautospagj.com`)
-- [ ] Claim or create the Google Business Profile (category: *Car detailing
-  service*) with exactly the same name, address, and phone as the site
-- [ ] Never link to or reuse anything from the Aurora listing
-
-### Claims on the site that describe how they work
-
-These are standard for a detailing shop, but each one is a promise. Check
-that every item is true for this shop, and cut or reword any that isn't:
-
-- [ ] **Service list.** Do they offer all four (interior, exterior, paint
-  correction, ceramic coating) plus a full detail? Anything missing (headlight
-  restoration, engine bay, odor treatment, RVs or boats)?
-- [ ] **"What's included" checklists** on each page in `services/`
-  (two-bucket hand wash, hot-water extraction, compressed-air vent purge,
-  clay bar, mag chloride removal, UV protectant, etc.)
-- [ ] **"Done indoors"** (home page, about page). Does the shop have an
-  indoor bay, and does all work happen inside?
-- [ ] **"You'll have the quote before we start"** (home page)
-- [ ] **"We'll call when it's ready and walk you through what we did"** (home page)
-- [ ] **"No surprise add-ons at pickup"** (about page)
-- [ ] **Nearby towns:** Fruita, Palisade, Clifton, Redlands, Orchard Mesa,
-  Whitewater. Add or remove any.
-- [ ] **Ceramic coating:** the page doesn't state how many years a coating
-  lasts. If they sell named packages with ratings, those can be added.
-
----
-
-## 3. Photos and logo
-
-- [ ] **Logo.** The mesa-and-sparkle mark is a placeholder I drew. If they
-  have a real logo, send it (SVG preferred) and it replaces the header,
-  favicon, and share image.
-- [ ] **Before/after photos of their own work, 6–10.** A gallery is
-  pre-built and commented out in `index.html` (search `GALLERY`). Run the
-  photos through `asset-processor` for AVIF/WebP/JPEG sets, then uncomment.
-  Never use stock photos as "our work."
-- [ ] **A hero photo (optional).** The right side of the home page hero is
-  open on desktop. A shot of a finished car in the shop would fill it. Keep it
-  eager-loaded (it would become the LCP image).
-- [ ] **Reviews.** No testimonials or star ratings are on the site. Once they
-  have Google reviews, add a "Read our reviews on Google" link. Only quote
-  reviews with the reviewer's permission.
-
----
-
-## 4. Accounts to set up
-
-- [ ] **Formspree.** Create a form, set the notification email to the
-  shop's inbox, and copy the ID from the endpoint
-  (`https://formspree.io/f/THIS_PART`) into `[FORMSPREE_ID]`. After going
-  live, send one test request and confirm it arrives.
-- [ ] **GA4.** Create a property and web stream, then put the Measurement ID
-  in `[GA4_ID]`. Analytics stays switched off until a real ID is in. Once
-  the events first fire, mark both as **key events** (Admin → Events):
-  - `generate_lead`: quote form sent (only fires on a successful send)
-  - `click_to_call`: any phone link tapped. `link_location` says which one
-    (`hero`, `header`, `mobile-bar`, `cta-band`, `footer`, …)
-- [ ] **Google Search Console.** Verify by DNS, then submit `/sitemap.xml`.
-- [ ] **Google Business Profile.** Set the Website link to the home page with
-  `?utm_source=google&utm_medium=organic&utm_campaign=gbp` so Maps traffic
-  shows up separately in GA4.
-
----
-
-## 5. Go live (GitHub Pages)
-
-1. Create the GitHub repo (`gh repo create`), push `main`, then go to
-   Settings → Pages → *Deploy from a branch* → `main` / root.
-2. Add a `CNAME` file at the root containing just the domain (not created
-   yet because the domain isn't chosen).
-3. DNS: four A records for the apex to `185.199.108.153`,
-   `185.199.109.153`, `185.199.110.153`, `185.199.111.153`, and a CNAME for
-   `www` pointing to `<github-user>.github.io`.
-4. Once the certificate is issued, tick **Enforce HTTPS**.
-
-Notes:
-
-- `404.html` uses root paths (`/css/style.css`) so it works at any depth on
-  the custom domain. On the temporary `github.io/<repo>/` address it will
-  look unstyled, which is expected and fixes itself once the domain is
-  connected.
-- `_config.yml` keeps `README.md`, this file, and `src/` off the public
-  site.
-
----
-
-## 6. QA already done (October 15, 2026)
-
-Run locally at 375px (phone) and 1366px (desktop):
-
-- Lighthouse (mobile): Performance 99–100, Accessibility 100, Best Practices
-  100 on every page. LCP 1.2–1.5s, layout shift 0. SEO shows 83 only because
-  `[SITE_URL]` isn't a real URL yet (canonical + robots.txt); it clears once
-  filled.
-- linkinator: no broken internal links.
-- Quote form: empty submit blocked, error message on a failed send,
-  confirmation on success, GA4 event fires only on success.
-- Mobile menu: opens, closes on Escape, focus returns to the button.
-- Call button visible above the fold on a 375×667 phone, plus a fixed call
-  bar at the bottom.
-
-Re-run Lighthouse and linkinator after the placeholders are filled and again
-on the live domain.
+Lighthouse mobile on the home page: Performance 96, Accessibility 100, Best
+Practices 100, SEO 100. No horizontal scroll at 360/375/768/1366. All internal
+links resolve. Mobile menu, shade picker, and form validation work. Every
+link and button clears the 24px target minimum; primary actions are 48px.

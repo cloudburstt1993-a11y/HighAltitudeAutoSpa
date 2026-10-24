@@ -50,6 +50,28 @@ document.querySelectorAll('[data-year]').forEach((el) => {
   el.textContent = new Date().getFullYear();
 });
 
+// Tint shade picker: tap a swatch, the window preview darkens to that VLT.
+const SHADE_NOTES = {
+  5: '5% — limo. Privacy glass dark; back windows only in Colorado.',
+  20: '20% — the dark look most people picture when they say "tinted."',
+  35: '35% — a clear step darker than factory glass, still easy to see out of at night.',
+  50: '50% — light. Mostly heat and UV rejection, a subtle tint.',
+  70: '70% — nearly clear. What Colorado requires on the front doors if the back is darker than 27%.',
+};
+document.querySelectorAll('[data-shade-picker]').forEach((picker) => {
+  const film = picker.querySelector('.film');
+  const label = picker.querySelector('[data-shade-label]');
+  picker.querySelectorAll('.shade').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const v = Number(btn.dataset.shade);
+      picker.querySelectorAll('.shade').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      film.style.opacity = String(1 - v / 100);
+      label.textContent = SHADE_NOTES[v] || v + '%';
+      track('select_shade', { shade: v });
+    });
+  });
+});
+
 // Quote form → Formspree, with an in-page confirmation instead of a trip to formspree.io.
 // Without JS the form still posts normally and Formspree shows its own thank-you page.
 const form = document.querySelector('[data-quote-form]');

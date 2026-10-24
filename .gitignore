@@ -11,3 +11,5 @@ linkinator-*.txt
 
 # Local preview config
 .claude/
+node_modules/
+node_modules/
